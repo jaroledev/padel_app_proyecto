@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-m51#rmz^35^)@trfh(62^junb7rhzh=66x51rkudxj=dt(s+f4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['padelapp-production.up.railway.app', 'localhost']
 
 
 # Application definition
