@@ -1,0 +1,1 @@
+web: gunicorn padel_app_proyecto.wsgi 
