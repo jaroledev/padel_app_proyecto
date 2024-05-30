@@ -1,1 +1,1 @@
-web: gunicorn padel_app_proyecto.wsgi 
+web: python manage.py collectstatic && gunicorn padel_app_proyecto.wsgi 
