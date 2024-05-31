@@ -32,7 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['padelapp-production.up.railway.app', 'localhost']
 
-CSRF_TRUSTED_ORIGINS = ['http://*','http://padelapp-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['http://*','https://padelapp-production.up.railway.app']
 
 
 # Application definition
