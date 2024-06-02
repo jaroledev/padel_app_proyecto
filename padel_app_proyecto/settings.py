@@ -25,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m51#rmz^35^)@trfh(62^junb7rhzh=66x51rkudxj=dt(s+f4'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['padelapp-production.up.railway.app', 'localhost']
+ALLOWED_HOSTS = ['padelapp-production.up.railway.app', '127.0.0.1']
 
 CSRF_TRUSTED_ORIGINS = ['http://*','https://padelapp-production.up.railway.app']
 
