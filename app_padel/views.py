@@ -172,8 +172,8 @@ def obtener_numero_pistas(request):
 def misReservas(request):
     # Obtener todas las reservas del usuario actual
     fecha_actual = datetime.now()
-    reservas_activas = Reserva.objects.filter(usuario=request.user).filter(activo=True).filter(hora_inicio__gt=fecha_actual)
-    reservas_historico = Reserva.objects.filter(usuario=request.user).filter(activo=True).filter(hora_inicio__lt=fecha_actual)
+    reservas_activas = Reserva.objects.filter(usuario=request.user).filter(activa=True).filter(hora_inicio__gt=fecha_actual)
+    reservas_historico = Reserva.objects.filter(usuario=request.user).filter(activa=True).filter(hora_inicio__lt=fecha_actual)
     return render(request, 'app_padel/misReservas.html', {'reservas_activas': reservas_activas,'reservas_historico': reservas_historico})
 
 
