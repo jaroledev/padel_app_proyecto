@@ -28,8 +28,8 @@ class Reserva(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     hora_inicio = models.DateTimeField()
     hora_fin = models.DateTimeField()
-    updated = models.DateTimeField()
-    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     activa = models.BooleanField(default=1)
 
     def __str__(self):
