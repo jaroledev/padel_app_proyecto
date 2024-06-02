@@ -1,0 +1,74 @@
+{% extends 'app_padel/base.html' %} 
+{% block content %}
+<title>App Padel - Mis Reservas</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+ <!-- Contenido principal -->
+ <div class="content" id="content">
+    <div class="container mt-5">
+        <h1 class="text-center">Nueva Reserva</h1>
+        <form id="reservaForm" method="POST" action="{% url 'crear_reserva' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="row mb-6 pt-2" style="align-items: end;">
+                    <div class="col-sm-3">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" class="form-control" id="fecha" name="fecha" min="{{ hoy }}" required>
+                    </div>
+                    <div class="col-sm-3">    
+                        <label for="hora">Hora:</label>
+                        <select class="form-control" id="hora" name="hora" required>
+                        {% for hora in horas %}
+                            <option value="{{ hora }}">{{ hora }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="ciudad">Ciudad:</label>
+                        <select class="form-control" id="ciudad" name="ciudad">
+                            {% for ciudad in ciudades %}
+                                <option value="{{ ciudad.direccion }}">{{ ciudad.direccion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+            </div>
+        </form>
+        <div id="resultados" class="mt-5">
+            {% if clubs or not error %}
+                {% for club in clubs %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            {{ club.nombre }} - {{ club.direccion }}
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for pista in club.pistas.all %}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card">
+                                            <img src="data:image/png;base64,{{ club.detalles.imagen_principal }}" class="card-img-top" alt="Imagen de la pista">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Pista {{ pista.numero }}</h5>
+                                                <p class="card-text">{{ pista.descripcion }}</p>
+                                                <a href="{% url 'reservaPista' pista.id %}?fecha={{ request.POST.fecha }}&hora={{ request.POST.hora }}" class="btn btn-primary">Reservar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% elif not error %}
+                <p>No hay clubs ni pistas disponibles para los criterios seleccionados.</p>
+            {% else %}
+                    <p>{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ </div> 
+{% endblock %}

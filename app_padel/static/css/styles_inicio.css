@@ -1,0 +1,300 @@
+/* Estilos generales */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilos para la barra lateral */
+.sidebar {
+    position: fixed;
+    left: -150px; /* Inicialmente oculta pero estrecha */
+    top: 0;
+    bottom: 0;
+    width: 200px; /* Ancho estrecho */
+    background-color: #333; /* Color de fondo */
+    padding-top: 60px;
+    transition: left 0.3s ease, opacity 0.3s ease; /* Añadir transición de opacidad */
+    opacity: 0.9; /* Opacidad inicial */
+    z-index: 2;
+}
+
+.active {
+    left: 0; /* Mostrar el menú cuando está activo */
+    opacity: 1; /* Ajustar opacidad cuando está activo */
+}
+
+.logo {
+    color: #fff; /* Color del texto del logo */
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    background-image: url('../images/pala.jpg');
+    width: fit-content;
+    height: fit-content;
+    background-size: cover;
+}
+
+/* Estilos para las opciones del menú */
+.menu-options {
+    padding-top: 20px;
+}
+
+.menu-options a {
+    display: block;
+    color: #fff; /* Color del texto del menú */
+    text-decoration: none;
+    padding: 15px 20px;
+    transition: background-color 0.3s ease; /* Transición al pasar el ratón por encima */
+}
+
+.menu-options a:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Color de fondo al pasar el ratón por encima */
+}
+
+/* Estilos para el botón de hamburguesa */
+.hamburger-menu {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 999; /* Asegura que esté sobre el contenido */
+    cursor: pointer;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin: 5px 0;
+    transition: background-color 0.3s ease; /* Transición al pasar el ratón por encima */
+}
+
+.bar:hover {
+    background-color: rgba(255, 255, 255, 0.7); /* Color de fondo al pasar el ratón por encima */
+}
+
+/* Estilos para el contenido principal */
+.content {
+    margin-left: 50px; /* Inicialmente sin margen */
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.content.active {
+    margin-left: 200px; /* Margen cuando la barra lateral está activa */
+}
+
+/* Estilos para el botón de salir */
+.logout-btn {
+    position: absolute;
+    bottom: 10px; /* Colocarlo en la parte inferior */
+    left: 10px; /* Colocarlo en la parte izquierda */
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #666;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.person-btn {
+    position: absolute;
+    bottom: 10px; /* Colocarlo en la parte inferior */
+    left: 90px; /* Colocarlo en la parte izquierda */
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #666;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #333;
+}
+
+.contenedor-imagenes {
+    /* display: flex; */
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.imagen-pista {
+    width: calc(33.33% - 20px); /* Ajusta el tamaño de la imagen para ocupar aproximadamente un tercio del ancho del contenedor */
+    margin-bottom: 20px;
+    background-image: url('../images/pista_padel.jpg');
+}
+
+.contenido-bloque {
+    text-align: center;
+}
+
+.modal {
+    display: none; /* Ocultar el modal por defecto */
+    position: fixed; /* Posicionamiento fijo para que se superponga sobre toda la pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para el modal */
+    z-index: 999; /* Z-index alto para que esté por encima de otros elementos */
+}
+
+.modal-contenido {
+    position: absolute; /* Posicionamiento absoluto para el contenido del modal */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centrar el contenido vertical y horizontalmente */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.cerrar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.container {
+    text-align: center;
+    /* border: 1px solid #000; Borde negro fino */
+    border-radius: 8px; /* Esquinas redondeadas */
+    padding: 20px;
+    background-color: #ffffff; /* Fondo blanco para el contenedor */
+    position: relative;
+    z-index: 2;
+}
+.btn-pastel {
+    background-color: #8ecae6;
+    color: #fff;
+    border: 1px solid #000; /* Borde negro fino */
+    border-radius: 4px; /* Esquinas redondeadas */
+    transition: background-color 0.3s ease;
+}
+.btn-pastel:hover {
+    background-color: #219ebc;
+}
+.btn-large {
+    background-color: #ffb703;
+    color: #fff;
+    border: 1px solid #000; /* Borde negro fino */
+    border-radius: 4px; /* Esquinas redondeadas */
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+.btn-large:hover {
+    background-color: #fb8500;
+}
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+    z-index: 1;
+}
+.club-container {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.club {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px;
+    background-color: #f9f9f9;
+    flex: 1 1 30%;
+    max-width: 30%;
+    text-align: center;
+}
+.club img {
+    width: 100%;
+    border-radius: 8px;
+}
+.city-title {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+@media (max-width: 768px) {
+    .club {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+#clubesDisponibles{
+    /* padding-top: 25%; */
+}
+.content-container {
+    /* border: 1px solid #000; */
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.user-info {
+    margin-bottom: 20px;
+}
+.user-info label {
+    font-weight: bold;
+}
+
+select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Aplica estilo al select para mostrar solo 4 opciones visibles */
+select {
+    overflow-y: auto;  /* Permite el scroll vertical */
+    height: auto;  /* Ajusta la altura automáticamente */
+}
+
+select option {
+    padding: 0.5rem;
+}
+
+/* Limitar la cantidad de opciones visibles a 4 */
+select[multiple], select[size] {
+    height: calc(1.5em * 4);  /* Altura del select para mostrar 4 opciones */
+}
+
+select:focus {
+    outline: none;  /* Elimina el borde azul cuando el select está enfocado */
+    box-shadow: none;  /* Elimina el sombreado del select */
+}
+
+select::-webkit-scrollbar {
+    width: 0.25rem;  /* Ancho del scrollbar */
+}
+
+select::-webkit-scrollbar-thumb {
+    background-color: #888;  /* Color del scrollbar */
+    border-radius: 0.5rem;  /* Bordes redondeados del scrollbar */
+}
+
+select::-webkit-scrollbar-thumb:hover {
+    background-color: #555;  /* Color del scrollbar al pasar el mouse */
+}
+

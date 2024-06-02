@@ -20,7 +20,7 @@ class Pista(models.Model):
     activa = models.BooleanField(default=1)
 
     def __str__(self):
-        return f"Pista {self.numero} - {self.descripcion} - {self.club.nombre}"
+        return f"Pista {self.numero} - {self.descripcion} - {self.club_admin.nombre}"
 
 
 class Reserva(models.Model):
