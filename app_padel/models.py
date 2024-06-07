@@ -39,6 +39,13 @@ class Reserva(models.Model):
 class Dimensiones(models.Model):
     horas_disponibles = models.CharField(max_length=50)
 
+    class Meta:
+        verbose_name = "Hora Disponible"
+        verbose_name_plural = "Horas Disponibles"
+        
+    def __str__(self):
+        return self.horas_disponibles
+
 class DetallesClub(models.Model):
     club = models.OneToOneField(Club, on_delete=models.CASCADE, primary_key=True,related_name='detalles')
     direccion = models.CharField(max_length=255)
