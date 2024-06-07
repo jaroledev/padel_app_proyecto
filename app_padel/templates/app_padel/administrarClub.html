@@ -1,0 +1,87 @@
+{% extends 'app_padel/base.html' %} 
+{% block content %}
+<meta charset="UTF-8">
+<title>Administrar Club</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <div class="content" id="content">
+    <div class="container mt-4">
+        <h2 class="text-center">Administrar Club</h2>
+        <h3 class="text-center">{{ club.nombre }}</h3>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <a href="{% url 'modificar_club' club.id %}" class="btn btn-large">Modificar Club</a>
+                </div>
+                <div class="col-6">
+                    <a href="{% url 'gestionar_detalles_club' club.id %}" class="btn btn-large">Modificar Detalles</a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h3 style="text-align: justify;">Controlador de reservas:</h3>
+        <form method="GET" action="{% url 'administrar_club' %}">
+            <div class="form-group">
+                <div class="row mb-6 pt-2" style="align-items: end;">
+                    <div class="col-sm-4">
+                        <label for="fecha">Seleccionar fecha:</label>
+                    </div>
+                    <div class="col-sm-4">    
+                        <input type="date" id="fecha" name="fecha" class="form-control" value="{{ fecha_seleccionada }}">
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="submit" class="btn btn-primary">Buscar Reservas</button>
+                    </div>
+                </div> 
+            </div>
+        </form>
+
+        {% if reservas_agrupadas %}
+            <div class="mt-4">
+                {% for pista, reservas in reservas_agrupadas.items %}
+                    <h4>Pista: {{ pista.numero }}</h4>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Usuario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reserva in reservas %}
+                                <tr>
+                                    <td>{{ reserva.hora_inicio|date:"H:i" }}</td>
+                                    <td>{{ reserva.usuario.username }}</td>
+                                    <td>
+                                        <a href={% url "delete" reserva.id %} class="btn btn-danger">Cancelar</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No hay reservas para la fecha seleccionada.</p>
+        {% endif %}
+    </div>
+</div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#buscar').click(function() {
+        var fecha = $('#fecha').val();
+        if (fecha) {
+            window.location.href = "{% url 'administrar_club' %}?fecha=" + fecha;
+        }
+    });
+});
+</script>
+</body>
+{% endblock %}

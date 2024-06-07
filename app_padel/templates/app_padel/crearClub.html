@@ -1,0 +1,74 @@
+{% extends 'app_padel/base.html' %} {% block content %}
+
+<link
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+  rel="stylesheet"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<title>Crear Club</title>
+
+<body>
+  <div class="content" id="content">
+    <div class="container mt-5">
+      <h2>Crear Club</h2>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="row mb-6 pt-3">
+          <div class="col-sm-6">
+            <div class="form-group">
+              {{ form.nombre.label_tag }} {{ form.nombre }}
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              {{ form.ciudad.label_tag }} {{ form.ciudad }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          {{ form.usuario_admin.label_tag }} {{ form.usuario_admin }}
+        </div>
+        <button type="submit" class="btn btn-primary">Crear Club</button>
+      </form>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $(".select2").select2({
+        ajax: {
+          url: "/buscar_usuarios/",
+          dataType: "json",
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // términos de búsqueda
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: $.map(data, function (item) {
+                return {
+                  text: item.username,
+                  id: item.id,
+                };
+              }),
+            };
+          },
+          cache: true,
+        },
+        minimumInputLength: 1,
+        placeholder: "Buscar usuario...",
+      });
+    });
+  </script>
+</body>
+
+{% endblock %}

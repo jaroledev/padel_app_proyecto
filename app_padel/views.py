@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
 from django.contrib import messages
-from .forms import RegistroForm, ReservaForm,DetallesClubForm
+from .forms import RegistroForm, ReservaForm,DetallesClubForm, ClubForm, ClubForm2, PistaForm
 from .models import Club, Pista, Reserva , DetallesClub , Dimensiones
 from django.http import JsonResponse,HttpResponse
 from .funciones import convert_base64_to_image,convert_image_to_base64
 from django.utils import timezone
 from datetime import datetime, timedelta
+
+def superuser_required(view_func):
+    return user_passes_test(lambda u: u.is_superuser, login_url='inicio')(view_func)
 
 def home(request):
     return render(request, 'app_padel/home.html')
@@ -86,7 +90,7 @@ def logout_view(request):
     return redirect('login')
 
 
-
+@login_required
 def crear_reserva(request):
     #horas = [f"{hour:02d}:00" for hour in range(8, 23)] + [f"{hour:02d}:30" for hour in range(8, 22)]
     horas_dim = Dimensiones.objects.all()
@@ -110,16 +114,23 @@ def crear_reserva(request):
 
         fecha_hora = f"{fecha} {hora}"
         fecha_hora_dt = timezone.datetime.strptime(fecha_hora, '%Y-%m-%d %H:%M')
+        fecha_hora_dt_aware_ini = timezone.make_aware(fecha_hora_dt, timezone.get_current_timezone())
+        fecha_hora_dt_aware_inicio = fecha_hora_dt_aware_ini - timedelta(minutes=90)
+        fecha_hora_dt_aware_fin = fecha_hora_dt_aware_ini + timedelta(minutes=90)
 
         # Filtrar reservas activas para la fecha y hora seleccionadas
-        reservas = Reserva.objects.filter(hora_inicio=fecha_hora_dt, activo=True)
-
+        reservas = Reserva.objects.filter(hora_inicio_gt = fecha_hora_dt_aware_inicio, hora_inicio_lt = fecha_hora_dt_aware_fin, activo=True)
+        
         # Obtener pistas no reservadas
         pistas_reservadas = reservas.values_list('pista_id', flat=True)
         pistas_disponibles = Pista.objects.exclude(id__in=pistas_reservadas)
 
-        if ciudad:
-            clubs = Club.objects.filter(direccion__icontains=ciudad, pistas__in=pistas_disponibles).distinct()
+        pistas_ocupadas = []
+        for pista in pistas_reservadas:
+            pistas_ocupadas.append(pista)
+
+        if ciudad!= '-1':
+            clubs = Club.objects.filter(ciudad__icontains=ciudad, pistas__in=pistas_disponibles).distinct()
         else:
             clubs = Club.objects.filter(pistas__in=pistas_disponibles).distinct()
 
@@ -176,25 +187,6 @@ def misReservas(request):
     reservas_historico = Reserva.objects.filter(usuario=request.user).filter(activa=True).filter(hora_inicio__lt=fecha_actual)
     return render(request, 'app_padel/misReservas.html', {'reservas_activas': reservas_activas,'reservas_historico': reservas_historico})
 
-
-def actualizarReserva(request, reserva_id):
-    # Obtener la reserva a actualizar
-    reserva = Reserva.objects.get(id=reserva_id)
-
-    if request.method == 'POST':
-        # Crear un formulario de reserva con los datos de la reserva existente y los datos proporcionados en el formulario
-        form = ReservaForm(request.POST, instance=reserva)
-        if form.is_valid():
-            # Guardar los cambios en la reserva
-            form.save()
-            return redirect('misReservas')  # Redireccionar a la vista de misReservas
-    else:
-        # Crear un formulario de reserva con los datos de la reserva existente
-        form = ReservaForm(instance=reserva)
-
-    return render(request, 'app_padel/actualizar_reserva.html', {'form': form})
-
-
 def delete_reserva(request, reserva_id):
     # Obtener la reserva a eliminar
     reserva = get_object_or_404(Reserva, pk=reserva_id)
@@ -204,20 +196,28 @@ def delete_reserva(request, reserva_id):
     reserva.save()
     return misReservas(request)
 
-def create_detalles_club(request):
+def gestionar_detalles_club(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    detalles_club, created = DetallesClub.objects.get_or_create(club=club)
+
     if request.method == 'POST':
-        form = DetallesClubForm(request.POST, request.FILES)
+        form = DetallesClubForm(request.POST, request.FILES, instance=detalles_club)
         if form.is_valid():
-            detalles_club = form.save(commit=False)
-            if 'imagen_principal' in request.FILES:
-                detalles_club.imagen_principal = convert_image_to_base64(request.FILES['imagen_principal'])
-            if 'imagen_secundaria' in request.FILES:
-                detalles_club.imagen_secundaria = convert_image_to_base64(request.FILES['imagen_secundaria'])
-            detalles_club.save()
-            return redirect('inicio')
+            if 'imagen_principal_file' in request.FILES:
+                detalles_club.imagen_principal = convert_image_to_base64(request.FILES['imagen_principal_file'])
+            if 'imagen_secundaria_file' in request.FILES:
+                detalles_club.imagen_secundaria = convert_image_to_base64(request.FILES['imagen_secundaria_file'])
+            form.save()
+            return redirect('administrar_club')
     else:
-        form = DetallesClubForm()
-    return render(request, 'app_padel/detalles_club_form.html', {'form': form})
+        form = DetallesClubForm(instance=detalles_club)
+    
+    context = {
+        'club': club,
+        'form': form,
+        'detalles_club': detalles_club
+    }
+    return render(request, 'app_padel/detallesClub.html', context)
 
 def clubs_disponibles(request):
     clubs = Club.objects.all()
@@ -234,3 +234,87 @@ def clubs_disponibles(request):
         'clubs': clubs
     }
     return render(request, 'app_padel/clubsDisponibles.html', context)
+
+@login_required
+def administrar_club(request):
+    usuario = request.user
+    try:
+        club = Club.objects.get(usuario_admin=usuario.id)
+    except Club.DoesNotExist:
+        # Manejar el caso donde el usuario no es administrador de ningún club
+        return render(request, 'administrarClub.html', {'error': 'No administras ningún club.'})
+
+    fecha_seleccionada = request.GET.get('fecha')
+    reservas_agrupadas = {}
+
+    if fecha_seleccionada:
+        fecha = timezone.datetime.strptime(fecha_seleccionada, '%Y-%m-%d').date()
+        reservas = Reserva.objects.filter(pista__club=club, hora_inicio__date=fecha, activo=True).order_by('pista')
+
+        # Agrupar reservas por pista
+        for reserva in reservas:
+            pista = reserva.pista
+            if pista not in reservas_agrupadas:
+                reservas_agrupadas[pista] = []
+            reservas_agrupadas[pista].append(reserva)
+
+    context = {
+        'fecha_seleccionada': fecha_seleccionada,
+        'reservas_agrupadas': reservas_agrupadas,
+        'club':club
+    }
+    return render(request, 'app_padel/administrarClub.html', context)
+
+@login_required
+def modificar_club(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+
+    if request.method == 'POST':
+        if 'guardar_club' in request.POST:
+            club_form = ClubForm(request.POST, instance=club)
+            if club_form.is_valid():
+                club_form.save()
+                return redirect('modificar_club', club_id=club_id)
+        elif 'agregar_pista' in request.POST:
+            pista_form = PistaForm(request.POST)
+            if pista_form.is_valid():
+                nueva_pista = pista_form.save(commit=False)
+                nueva_pista.club = club
+                nueva_pista.save()
+                return redirect('modificar_club', club_id=club_id)
+        elif 'eliminar_pista' in request.POST:
+            pista_id = request.POST.get('pista_id')
+            Pista.objects.filter(id=pista_id).delete()
+            return redirect('modificar_club', club_id=club_id)
+    else:
+        club_form = ClubForm(instance=club)
+        pista_form = PistaForm()
+
+    pistas = Pista.objects.filter(club=club)
+
+    context = {
+        'club_form': club_form,
+        'pista_form': pista_form,
+        'club': club,
+        'pistas': pistas,
+    }
+    return render(request, 'app_padel/modificarClub.html', context)
+
+@login_required(login_url='login')
+@superuser_required
+def crear_club(request):
+    if request.method == 'POST':
+        form = ClubForm2(request.POST)
+        if form.is_valid():
+            club = form.save(commit=False)
+            club.save()
+            return redirect('clubsDisponibles')  # Redirige a la vista que lista los clubes
+    else:
+        form = ClubForm2()
+    return render(request, 'app_padel/crearClub.html', {'form': form})
+
+def buscar_usuarios(request):
+    query = request.GET.get('q', '')
+    usuarios = User.objects.filter(username__icontains=query).exclude(id__in=Club.objects.values_list('usuario_admin', flat=True))
+    results = [{'id': user.id, 'username': user.username} for user in usuarios]
+    return JsonResponse(results, safe=False)
