@@ -25,7 +25,13 @@
         <div class="col-md-6">
           <div class="card mt-5">
             <div class="card-body">
-              <h1 class="card-title mb-4 text-center">PadelApp</h1>
+              <h1>
+                <img
+                  src="{% static 'images/logo_PadelApp_bueno.svg' %}"
+                  alt="PadelApp Logo"
+                  class="logo"
+                />
+              </h1>
               <form method="post">
                 {% csrf_token %} {{ form.as_p }}
                 <button type="submit" class="btn btn-primary btn-block">
