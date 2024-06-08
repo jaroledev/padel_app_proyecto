@@ -1,0 +1,44 @@
+{% extends 'app_padel/base.html' %} 
+{% block content %}
+<title>Modificar Club</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="content" id="content">
+    <div class="container mt-4">
+        <h2 class="text-center">Modificar Club: {{ club.nombre }}</h2>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            {{ club_form.as_p }}
+            <button type="submit" name="guardar_club" class="btn btn-primary">Guardar Cambios</button>
+        </form>
+
+        <h3 class="mt-5">Agregar Pista</h3>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            {{ pista_form.as_p }}
+            <button type="submit" name="agregar_pista" class="btn btn-success">Agregar Pista</button>
+        </form>
+
+        <h3 class="mt-5">Pistas Asociadas</h3>
+        <div class="list-group">
+            {% for pista in pistas %}
+                <div class="list-group-item">
+                    <p><strong>Número:</strong> {{ pista.numero }}</p>
+                    <p><strong>Descripción:</strong> {{ pista.descripcion }}</p>
+                    <form method="post" class="mt-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="pista_id" value="{{ pista.id }}">
+                        <button type="submit" name="eliminar_pista" class="btn btn-danger">Eliminar Pista</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+{% endblock %}
