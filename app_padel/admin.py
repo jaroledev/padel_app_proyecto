@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Reserva, Club, Pista, DetallesClub, Dimensiones
 
 class DimensionesAdmin(admin.ModelAdmin):
-    list_display = ('horas_disponibles')
+    list_display = ('id','horas_disponibles')
 # Register your models here.
 
 admin.site.register(Reserva)
