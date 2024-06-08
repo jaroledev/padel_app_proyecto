@@ -1,61 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Padel_App</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PadelApp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Enlace al archivo CSS -->
-    <link rel="stylesheet" href="/static/css/styles_inicio.css">
-</head>
-<body>
-     <!-- Barra lateral izquierda con menú hamburguesa -->
-     <div class="sidebar" id="sidebar">
-        <!-- Opciones de menú -->
-        <div class="menu-options" id="menuOptions">
-            <!-- <a class="logo" href="{% url 'inicio' %}">Inicio</a> -->
-            <a href="{% url 'inicio' %}">Inicio</a>
-            <a href="{% url 'misReservas' %}">Mis Reservas</a>
-            <a href="{% url 'crear_reserva' %}">Reservar</a>
-            {% if club %}
-                <a href="#">Administrar Club</a>
-            {% endif %}
-            {% if user.is_superuser %}            
-                <a href="#">Añadir Club</a>
-            {% endif %}
+    <link rel="stylesheet" href="/static/css/styles_inicio.css" />
+  </head>
+  <body>
+    <!-- Barra lateral izquierda con menú hamburguesa -->
+    <div class="sidebar" id="sidebar">
+      <!-- Opciones de menú -->
+      <div class="menu-options" id="menuOptions">
+        <!-- <a class="logo" href="{% url 'inicio' %}">Inicio</a> -->
+        <a href="{% url 'inicio' %}">Inicio</a>
+        <a href="{% url 'misReservas' %}">Mis Reservas</a>
+        <a href="{% url 'crear_reserva' %}">Reservar</a>
+        {% if club %}
+        <a href="{% url 'administrar_club' %}">Administrar Club</a>
+        {% endif %} {% if user.is_superuser %}
+        <a href="{% url 'crearClub' %}">Añadir Club</a>
+        {% endif %}
 
-            <a href="{% url 'clubsDisponibles' %}">Clubs</a>
-            <a href="#">Contacto</a>
-        </div>
-        <!-- Botón de salir -->
-        <a href="{% url 'usuario' %}" class="person-btn bi bi-person-lines-fill"></a>
-        <a href="{% url 'logout' %}" class="logout-btn">Salir</a>
+        <a href="{% url 'clubsDisponibles' %}">Clubs</a>
+        <a href="#">Contacto</a>
+      </div>
+      <!-- Botón de salir -->
+      <a
+        href="{% url 'usuario' %}"
+        class="person-btn bi bi-person-lines-fill"
+      ></a>
+      <a href="{% url 'logout' %}" class="logout-btn">Salir</a>
     </div>
 
     <!-- Botón de hamburguesa -->
     <div class="hamburger-menu" onclick="toggleSidebar()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
     </div>
     <div id="contenido-bloque">
-    <!-- <div class="overlay"></div> -->
-    {% block content %}
-    {% endblock %}
+      <!-- <div class="overlay"></div> -->
+      {% block content %} {% endblock %}
     </div>
     <!-- Script para manejar el despliegue del menú -->
     <script>
-        function toggleSidebar() {
-            var sidebar = document.getElementById("sidebar");
-            var content = document.getElementById("content");
-            sidebar.classList.toggle("active");
-            content.classList.toggle("active");
-        }
-        $("#contenido-bloque").css("text-align", "center");
-        window.addEventListener('load', () => {
-            window.scrollTo(0, 0); // Asegura que la página se desplaza hacia la parte superior al cargar
-        });
+      function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        var content = document.getElementById("content");
+        sidebar.classList.toggle("active");
+        content.classList.toggle("active");
+      }
+      $("#contenido-bloque").css("text-align", "center");
+      window.addEventListener("load", () => {
+        window.scrollTo(0, 0); // Asegura que la página se desplaza hacia la parte superior al cargar
+      });
     </script>
-</body>
+  </body>
 </html>
