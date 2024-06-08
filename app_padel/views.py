@@ -100,22 +100,30 @@ def crear_reserva(request):
     horas.sort()
     ciudades = Club.objects.values('ciudad').distinct()
     hoy = timezone.now().date().isoformat()
+    ahora = timezone.now()
+
     if request.method == "POST":
         fecha = request.POST.get('fecha')
         hora = request.POST.get('hora')
         ciudad = request.POST.get('ciudad', '')
 
         if not fecha or not hora:
-            return render(request, 'app_padel/nuevaReserva.html', {'horas': horas ,'ciudades': ciudades, 'hoy' : hoy,'error': 'Debe seleccionar una fecha y una hora'})
-        # Verificación del lado del servidor
+            return render(request, 'app_padel/nuevaReserva.html', {'horas': horas, 'ciudades': ciudades, 'hoy': hoy, 'error': 'Debe seleccionar una fecha y una hora'})
+        
+        # Verificación del lado del servidor para fecha en el pasado
         if fecha and timezone.datetime.strptime(fecha, '%Y-%m-%d').date() < timezone.now().date():
-            return render(request, 'app_padel/nuevaReserva.html', {'horas': horas ,'ciudades': ciudades, 'hoy' : hoy,'error': 'Debe seleccionar una fecha igual o superior al dia de hoy'})
+            return render(request, 'app_padel/nuevaReserva.html', {'horas': horas, 'ciudades': ciudades, 'hoy': hoy, 'error': 'Debe seleccionar una fecha igual o superior al día de hoy'})
 
+        # Verificación del lado del servidor para hora en el pasado
         fecha_hora = f"{fecha} {hora}"
         fecha_hora_dt = timezone.datetime.strptime(fecha_hora, '%Y-%m-%d %H:%M')
-        fecha_hora_dt_aware_ini = timezone.make_aware(fecha_hora_dt, timezone.get_current_timezone())
-        fecha_hora_dt_aware_inicio = fecha_hora_dt_aware_ini - timedelta(minutes=90)
-        fecha_hora_dt_aware_fin = fecha_hora_dt_aware_ini + timedelta(minutes=90)
+        fecha_hora_dt_aware = timezone.make_aware(fecha_hora_dt, timezone.get_current_timezone())
+
+        if fecha_hora_dt_aware < ahora:
+            return render(request, 'app_padel/nuevaReserva.html', {'horas': horas, 'ciudades': ciudades, 'hoy': hoy, 'error': 'Debe seleccionar una hora igual o superior a la hora actual'})
+
+        fecha_hora_dt_aware_inicio = fecha_hora_dt_aware - timedelta(minutes=90)
+        fecha_hora_dt_aware_fin = fecha_hora_dt_aware + timedelta(minutes=90)
 
         # Filtrar reservas activas para la fecha y hora seleccionadas
         reservas = Reserva.objects.filter(hora_inicio__gt=fecha_hora_dt_aware_inicio, hora_inicio__lt=fecha_hora_dt_aware_fin, activa=True)
@@ -140,10 +148,10 @@ def crear_reserva(request):
             'hora': hora,
             'ciudad': ciudad,
             'ciudades': ciudades, 
-            'hoy' : hoy
+            'hoy': hoy
         })
 
-    return render(request, 'app_padel/nuevaReserva.html', {'horas': horas ,'ciudades': ciudades, 'hoy' : hoy})
+    return render(request, 'app_padel/nuevaReserva.html', {'horas': horas, 'ciudades': ciudades, 'hoy': hoy})
 
 
 def reserva_pista(request, pista_id):
