@@ -1,24 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registro - App Padel</title>
-    <!-- Enlace al archivo CSS -->
-    <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
-</head>
-<body>
+    <!-- Enlace al archivo CSS de Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <!-- Enlace a tu archivo CSS personalizado -->
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>App Padel</h1>
-        <h2>Registro</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Registrarse</button>
-        </form>
-        <div class="register-link">
-            ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card mt-5">
+            <div class="card-body">
+              <h1 class="card-title mb-4 text-center">PadelApp</h1>
+              <form method="post">
+                {% csrf_token %} {{ form.as_p }}
+                <button type="submit" class="btn btn-primary btn-block">
+                  Registrarse
+                </button>
+              </form>
+              <div class="register-link text-center mt-3">
+                ¿Ya tienes una cuenta?
+                <a href="{% url 'login' %}">Inicia sesión aquí</a>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</body>
+    <!-- Enlace al archivo JS de Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>
