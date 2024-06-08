@@ -92,7 +92,6 @@ def logout_view(request):
 
 @login_required
 def crear_reserva(request):
-    #horas = [f"{hour:02d}:00" for hour in range(8, 23)] + [f"{hour:02d}:30" for hour in range(8, 22)]
     horas_dim = Dimensiones.objects.all()
     horas_list = horas_dim.values_list('horas_disponibles', flat=True).order_by('horas_disponibles')
     horas = []
@@ -119,7 +118,7 @@ def crear_reserva(request):
         fecha_hora_dt_aware_fin = fecha_hora_dt_aware_ini + timedelta(minutes=90)
 
         # Filtrar reservas activas para la fecha y hora seleccionadas
-        reservas = Reserva.objects.filter(hora_inicio_gt = fecha_hora_dt_aware_inicio, hora_inicio_lt = fecha_hora_dt_aware_fin, activo=True)
+        reservas = Reserva.objects.filter(hora_inicio__gt=fecha_hora_dt_aware_inicio, hora_inicio__lt=fecha_hora_dt_aware_fin, activa=True)
         
         # Obtener pistas no reservadas
         pistas_reservadas = reservas.values_list('pista_id', flat=True)
@@ -129,7 +128,7 @@ def crear_reserva(request):
         for pista in pistas_reservadas:
             pistas_ocupadas.append(pista)
 
-        if ciudad!= '-1':
+        if ciudad != '-1':
             clubs = Club.objects.filter(ciudad__icontains=ciudad, pistas__in=pistas_disponibles).distinct()
         else:
             clubs = Club.objects.filter(pistas__in=pistas_disponibles).distinct()
@@ -145,6 +144,7 @@ def crear_reserva(request):
         })
 
     return render(request, 'app_padel/nuevaReserva.html', {'horas': horas ,'ciudades': ciudades, 'hoy' : hoy})
+
 
 def reserva_pista(request, pista_id):
     pista = get_object_or_404(Pista, id=pista_id)
@@ -162,7 +162,7 @@ def reserva_pista(request, pista_id):
             hora_inicio=fecha_hora_dt,
             hora_fin = hora_fin,
             created = datetime.now(),
-            activo=True
+            activa=True
         )
         return redirect('misReservas')
     fecha = request.GET.get('fecha')
@@ -191,8 +191,8 @@ def delete_reserva(request, reserva_id):
     # Obtener la reserva a eliminar
     reserva = get_object_or_404(Reserva, pk=reserva_id)
 
-    # Cambiar el valor de 'activo' a False
-    reserva.activo = False
+    # Cambiar el valor de 'activa' a False
+    reserva.activa = False
     reserva.save()
     return misReservas(request)
 
@@ -249,7 +249,7 @@ def administrar_club(request):
 
     if fecha_seleccionada:
         fecha = timezone.datetime.strptime(fecha_seleccionada, '%Y-%m-%d').date()
-        reservas = Reserva.objects.filter(pista__club=club, hora_inicio__date=fecha, activo=True).order_by('pista')
+        reservas = Reserva.objects.filter(pista__club=club, hora_inicio__date=fecha, activa=True).order_by('pista')
 
         # Agrupar reservas por pista
         for reserva in reservas:
