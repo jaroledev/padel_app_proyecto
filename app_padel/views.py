@@ -267,11 +267,11 @@ def administrar_club(request):
 
 @login_required
 def modificar_club(request, club_id):
-    club = get_object_or_404(Club, id=club_id)
+    club_admin = get_object_or_404(Club, id=club_id)
 
     if request.method == 'POST':
         if 'guardar_club' in request.POST:
-            club_form = ClubForm(request.POST, instance=club)
+            club_form = ClubForm(request.POST, instance=club_admin)
             if club_form.is_valid():
                 club_form.save()
                 return redirect('modificar_club', club_id=club_id)
@@ -279,7 +279,7 @@ def modificar_club(request, club_id):
             pista_form = PistaForm(request.POST)
             if pista_form.is_valid():
                 nueva_pista = pista_form.save(commit=False)
-                nueva_pista.club = club
+                nueva_pista.club_admin = club_admin
                 nueva_pista.save()
                 return redirect('modificar_club', club_id=club_id)
         elif 'eliminar_pista' in request.POST:
@@ -287,15 +287,15 @@ def modificar_club(request, club_id):
             Pista.objects.filter(id=pista_id).delete()
             return redirect('modificar_club', club_id=club_id)
     else:
-        club_form = ClubForm(instance=club)
+        club_form = ClubForm(instance=club_admin)
         pista_form = PistaForm()
 
-    pistas = Pista.objects.filter(club=club)
+    pistas = Pista.objects.filter(club_admin=club_admin)
 
     context = {
         'club_form': club_form,
         'pista_form': pista_form,
-        'club': club,
+        'club_admin': club_admin,
         'pistas': pistas,
     }
     return render(request, 'app_padel/modificarClub.html', context)

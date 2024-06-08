@@ -11,6 +11,13 @@
             {% csrf_token %}
             {{ club_form.as_p }}
             <button type="submit" name="guardar_club" class="btn btn-primary">Guardar Cambios</button>
+            <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="window.location.href='{% url 'administrar_club' %}'"
+          >
+            Cancelar
+          </button>
         </form>
 
         <h3 class="mt-5">Agregar Pista</h3>
