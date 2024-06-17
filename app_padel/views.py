@@ -258,7 +258,7 @@ def administrar_club(request):
 
     if fecha_seleccionada:
         fecha = timezone.datetime.strptime(fecha_seleccionada, '%Y-%m-%d').date()
-        reservas = Reserva.objects.filter(pista__club=club, hora_inicio__date=fecha, activa=True).order_by('pista')
+        reservas = Reserva.objects.filter(pista__club_admin=club, hora_inicio__date=fecha, activa=True).order_by('pista')
 
         # Agrupar reservas por pista
         for reserva in reservas:
