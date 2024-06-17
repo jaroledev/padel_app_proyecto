@@ -130,16 +130,16 @@ def crear_reserva(request):
         
         # Obtener pistas no reservadas
         pistas_reservadas = reservas.values_list('pista_id', flat=True)
-        pistas_disponibles = Pista.objects.exclude(id__in=pistas_reservadas)
+        pistas_disponibles = Pista.objects.exclude(id__in=pistas_reservadas).filter(activa=True)
 
         pistas_ocupadas = []
         for pista in pistas_reservadas:
             pistas_ocupadas.append(pista)
 
         if ciudad != '-1':
-            clubs = Club.objects.filter(ciudad__icontains=ciudad, pistas__in=pistas_disponibles).distinct()
+            clubs = Club.objects.filter(ciudad__icontains=ciudad, pistas__in=pistas_disponibles, activo=True).distinct()
         else:
-            clubs = Club.objects.filter(pistas__in=pistas_disponibles).distinct()
+            clubs = Club.objects.filter(pistas__in=pistas_disponibles, activo=True).distinct()
 
         return render(request, 'app_padel/nuevaReserva.html', {
             'horas': horas,
@@ -148,7 +148,8 @@ def crear_reserva(request):
             'hora': hora,
             'ciudad': ciudad,
             'ciudades': ciudades, 
-            'hoy': hoy
+            'hoy': hoy,
+            'pistas_ocupadas': pistas_ocupadas 
         })
 
     return render(request, 'app_padel/nuevaReserva.html', {'horas': horas, 'ciudades': ciudades, 'hoy': hoy})

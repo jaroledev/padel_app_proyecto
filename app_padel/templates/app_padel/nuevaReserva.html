@@ -12,7 +12,7 @@
                 <div class="row mb-6 pt-2" style="align-items: end;">
                     <div class="col-sm-3">
                         <label for="fecha">Fecha:</label>
-                        <input type="date" class="form-control" id="fecha" name="fecha" min="{{ hoy }}" required>
+                        <input type="date" class="form-control" id="fecha" name="fecha" min="{{ hoy }}" value="{{ fecha }}" required>
                     </div>
                     <div class="col-sm-3">    
                         <label for="hora">Hora:</label>
@@ -25,6 +25,7 @@
                     <div class="col-sm-3">
                         <label for="ciudad">Ciudad:</label>
                         <select class="form-control" id="ciudad" name="ciudad">
+                            <option value="-1">Todas</option>
                             {% for ciudad in ciudades %}
                                 <option value="{{ ciudad.ciudad }}">{{ ciudad.ciudad }}</option>
                             {% endfor %}
